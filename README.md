@@ -1,57 +1,28 @@
 # Homey MCP Server
 
-MCP server for controlling [Homey Pro](https://homey.app/) smart home systems. Provides 43 tools and 3 knowledge prompts for device control, automation, monitoring, troubleshooting, and more through the [Model Context Protocol](https://modelcontextprotocol.io/).
+[![CI](https://github.com/homey-mcp/homey-mcp/actions/workflows/ci.yml/badge.svg)](https://github.com/homey-mcp/homey-mcp/actions/workflows/ci.yml)
 
-## Features
+MCP server for controlling [Homey Pro](https://homey.app/) smart home systems through the [Model Context Protocol](https://modelcontextprotocol.io/).
 
-- **Devices** — List, search, get details, and control devices (on/off, dim, temperature, etc.)
-- **Zones** — List all rooms and areas
-- **Flows** — List, trigger, enable/disable automations (simple + advanced)
-- **Variables** — Read and set logic variables
-- **Apps** — List installed apps
-- **Insights** — Browse sensor history and get historical data
-- **Energy** — Live power consumption and daily/weekly/monthly/yearly reports
-- **Weather** — Current conditions and hourly forecast
-- **Presence** — Home/away and awake/asleep status per user
-- **Alarms** — List, create, update, and delete alarms
-- **Moods** — List and activate scenes/presets per zone
-- **Notifications** — Read and create notifications
-- **System** — System info, geolocation, updates, backups, LED ring, sessions
-- **Protocols** — Z-Wave log, driver listing for troubleshooting
-- **Knowledge** — Built-in prompts for best practices, troubleshooting, and flow patterns
+43 tools and 3 knowledge prompts for device control, automation, monitoring, troubleshooting, and more.
 
-## Setup
-
-### 1. Install
+## Quick Start
 
 ```bash
+git clone https://github.com/homey-mcp/homey-mcp.git
+cd homey-mcp
 npm install
 npm run build
 ```
 
-### 2. Authenticate with Homey
-
-**Option A: Homey CLI (recommended)**
+Authenticate with your Homey:
 
 ```bash
 npx homey login
 npx homey select
 ```
 
-The server automatically reads the stored OAuth token from `~/.athom-cli/settings.json`.
-
-**Option B: Local API Key**
-
-Create an API key at [my.homey.app/settings/system/api-keys](https://my.homey.app/settings/system/api-keys), then set environment variables:
-
-```bash
-export HOMEY_ADDRESS=http://192.168.1.x  # Your Homey's local IP
-export HOMEY_TOKEN=your-api-key
-```
-
-### 3. Configure your MCP client
-
-**Kiro / Claude Desktop / Cline:**
+Add to your MCP client config (Kiro, Claude Desktop, Cline, etc.):
 
 ```json
 {
@@ -64,9 +35,23 @@ export HOMEY_TOKEN=your-api-key
 }
 ```
 
+## Authentication
+
+The server supports two authentication methods:
+
+**Homey CLI (recommended)** — Run `npx homey login` and `npx homey select`. The server reads the stored OAuth token from `~/.athom-cli/settings.json` automatically.
+
+**Local API Key** — Create an API key at [my.homey.app](https://my.homey.app/settings/system/api-keys), then set environment variables:
+
+```bash
+export HOMEY_ADDRESS=http://192.168.1.x
+export HOMEY_TOKEN=your-api-key
+```
+
 ## Tools
 
 ### Devices
+
 | Tool | Description |
 |------|-------------|
 | `list_devices` | List devices, filter by zone or class |
@@ -75,6 +60,7 @@ export HOMEY_TOKEN=your-api-key
 | `set_device_capability` | Control a device (on/off, dim, temperature, etc.) |
 
 ### Zones & Flows
+
 | Tool | Description |
 |------|-------------|
 | `list_zones` | List all zones (rooms/areas) |
@@ -83,13 +69,18 @@ export HOMEY_TOKEN=your-api-key
 | `set_flow_enabled` | Enable or disable a flow |
 
 ### Logic & Apps
+
 | Tool | Description |
 |------|-------------|
 | `list_variables` | List logic variables |
 | `set_variable` | Set a variable value |
 | `list_apps` | List installed apps |
+| `restart_app` | Restart a Homey app |
+| `enable_app` | Enable or disable an app |
+| `uninstall_app` | Uninstall an app |
 
 ### Insights & Energy
+
 | Tool | Description |
 |------|-------------|
 | `list_insights` | List available insight logs |
@@ -98,6 +89,7 @@ export HOMEY_TOKEN=your-api-key
 | `get_energy_report` | Energy report for day/week/month/year |
 
 ### Weather & Presence
+
 | Tool | Description |
 |------|-------------|
 | `get_weather` | Current weather at Homey's location |
@@ -107,6 +99,7 @@ export HOMEY_TOKEN=your-api-key
 | `get_location` | Homey's configured location |
 
 ### Alarms & Moods
+
 | Tool | Description |
 |------|-------------|
 | `list_alarms` | List all alarms/timers |
@@ -116,6 +109,7 @@ export HOMEY_TOKEN=your-api-key
 | `set_mood` | Activate a mood in a zone |
 
 ### Notifications & System
+
 | Tool | Description |
 |------|-------------|
 | `list_notifications` | List recent notifications |
@@ -123,6 +117,7 @@ export HOMEY_TOKEN=your-api-key
 | `get_system_info` | System info (version, wifi, hostname) |
 
 ### Infrastructure & Protocols
+
 | Tool | Description |
 |------|-------------|
 | `list_drivers` | List all available device drivers |
@@ -137,35 +132,34 @@ export HOMEY_TOKEN=your-api-key
 | `get_memory_info` | Memory usage by app/component |
 | `get_storage_info` | Storage usage breakdown |
 | `set_system_name` | Set the Homey system name |
-| `restart_app` | Restart a Homey app |
-| `enable_app` | Enable or disable an app |
-| `uninstall_app` | Uninstall an app |
 
 ## Prompts
 
-The server includes built-in knowledge prompts accessible via the MCP prompts API:
+Built-in knowledge prompts accessible via the MCP prompts API:
 
 | Prompt | Description |
 |--------|-------------|
-| `homey_best_practices` | Zone architecture, device naming, protocol tips (Z-Wave/Zigbee), energy management, security, performance |
-| `homey_troubleshooting` | Diagnosing offline devices, Z-Wave/Zigbee issues, flow debugging, performance problems |
-| `homey_flow_patterns` | Automation patterns (presence, motion lighting, climate), naming conventions, anti-patterns to avoid |
+| `homey_best_practices` | Zone architecture, device naming, protocol tips, energy management, security |
+| `homey_troubleshooting` | Diagnosing offline devices, Z-Wave/Zigbee issues, flow debugging, performance |
+| `homey_flow_patterns` | Automation patterns, naming conventions, anti-patterns to avoid |
 
 ## Development
 
 ```bash
-npm run dev    # Run with tsx (no build step)
-npm run build  # Compile TypeScript
-npm start      # Run compiled version
+npm run dev        # Run with tsx (no build step)
+npm run build      # Compile TypeScript
+npm run lint       # ESLint
+npm run typecheck  # TypeScript strict check
+npm start          # Run compiled version
 ```
 
 ## Tech Stack
 
-- TypeScript + Node.js
+- TypeScript + Node.js (≥20)
 - [homey-api](https://www.npmjs.com/package/homey-api) v3 — Official Homey Web API client
-- [@modelcontextprotocol/sdk](https://www.npmjs.com/package/@modelcontextprotocol/sdk) v1.26 — MCP server with `McpServer` class
-- [zod](https://www.npmjs.com/package/zod) — Tool parameter validation
+- [@modelcontextprotocol/sdk](https://www.npmjs.com/package/@modelcontextprotocol/sdk) v1.26 — MCP server (`registerTool` with `ToolAnnotations`)
+- [zod](https://www.npmjs.com/package/zod) — Parameter validation
 
 ## License
 
-MIT
+[MIT](LICENSE)
