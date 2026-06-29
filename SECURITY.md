@@ -82,6 +82,6 @@ trivy fs --scanners vuln,secret,misconfig --skip-dirs dist .
 trivy config .
 
 # Built image (CI builds and scans this on every release)
-docker build -t homey-mcp .
-trivy image --severity HIGH,CRITICAL homey-mcp
+docker build -t homey-wan-kenobi .
+trivy image --severity HIGH,CRITICAL homey-wan-kenobi
 ```

@@ -6,8 +6,8 @@ import { z } from "zod";
 import { getHomeyApi } from "./homey.js";
 
 const server = new McpServer({
-  name: "homey-mcp",
-  version: "2.1.1",
+  name: "homey-wan-kenobi",
+  version: "2.1.2",
 });
 
 // ── Helpers ──────────────────────────────────────────────────────────

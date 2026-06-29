@@ -1,9 +1,9 @@
 services:
-  homey-mcp:
+  homey-wan-kenobi:
     # Pulls the published image. `docker compose up -d --build` builds locally instead.
     image: ringosystems/homey-wan-kenobi:latest
     build: .
-    container_name: homey-mcp
+    container_name: homey-wan-kenobi
     ports:
       - "8000:8000"
     environment:

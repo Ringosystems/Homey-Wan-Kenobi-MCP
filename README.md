@@ -1,10 +1,12 @@
-# Homey MCP Server
+# Homey-Wan-Kenobi MCP
 
 [![CI](https://github.com/Ringosystems/Homey-Wan-Kenobi-MCP/actions/workflows/ci.yml/badge.svg)](https://github.com/Ringosystems/Homey-Wan-Kenobi-MCP/actions/workflows/ci.yml)
 [![Docker Pulls](https://img.shields.io/docker/pulls/ringosystems/homey-wan-kenobi)](https://hub.docker.com/r/ringosystems/homey-wan-kenobi)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
 MCP server for controlling [Homey Pro](https://homey.app/) smart home systems through the [Model Context Protocol](https://modelcontextprotocol.io/).
+
+> The name nods to Obi-Wan Kenobi, your home's only hope for natural-language control.
 
 60 tools and 3 knowledge prompts for device control, flow authoring, automation, monitoring, troubleshooting, network diagnostics, and self-hosted deployment.
 
@@ -31,7 +33,7 @@ Add to your MCP client config (Kiro, Claude Desktop, Cline, etc.):
   "mcpServers": {
     "homey": {
       "command": "node",
-      "args": ["/path/to/homey-mcp/dist/index.js"]
+      "args": ["/path/to/Homey-Wan-Kenobi-MCP/dist/index.js"]
     }
   }
 }
@@ -96,10 +98,10 @@ The provided `docker-compose.yml` references the published image (with `build: .
 
 ```yaml
 services:
-  homey-mcp:
+  homey-wan-kenobi:
     image: ringosystems/homey-wan-kenobi:latest
     build: .
-    container_name: homey-mcp
+    container_name: homey-wan-kenobi
     ports:
       - "8000:8000"
     environment:

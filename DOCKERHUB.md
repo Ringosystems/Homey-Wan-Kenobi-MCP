@@ -1,4 +1,4 @@
-# Homey MCP
+# Homey-Wan-Kenobi MCP
 
 A **Model Context Protocol (MCP)** server for **Homey Pro** smart home systems. It talks directly to the Homey Web API so an MCP client (Claude Code, Claude Desktop, Cline, Kiro) can control devices, author and trigger flows, read energy and insights, run Z-Wave/Zigbee network diagnostics, and manage the system, all in natural language.
 
@@ -45,7 +45,7 @@ docker run -i --rm \
 Set `MCP_TRANSPORT=streamable-http` to expose the server over streamable-HTTP at `/mcp` (health at `/healthz`), wrapped by supergateway:
 
 ```bash
-docker run -d --name homey-mcp -p 8000:8000 \
+docker run -d --name homey-wan-kenobi -p 8000:8000 \
   -e MCP_TRANSPORT=streamable-http \
   -e HOMEY_ADDRESS=http://192.168.1.10 \
   -e HOMEY_TOKEN=your-local-api-key \

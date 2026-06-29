@@ -33,7 +33,7 @@ COPY --from=builder /app/dist ./dist
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
-LABEL org.opencontainers.image.title="homey-mcp" \
+LABEL org.opencontainers.image.title="homey-wan-kenobi-mcp" \
       org.opencontainers.image.description="MCP server for Homey Pro smart home control (60 tools, 3 prompts)" \
       org.opencontainers.image.licenses="MIT" \
       org.opencontainers.image.source="https://github.com/Ringosystems/Homey-Wan-Kenobi-MCP" \

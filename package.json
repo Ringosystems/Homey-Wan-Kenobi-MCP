@@ -1,6 +1,6 @@
 {
-  "name": "homey-mcp",
-  "version": "2.1.1",
+  "name": "homey-wan-kenobi-mcp",
+  "version": "2.1.2",
   "description": "MCP server for Homey Pro smart home control",
   "type": "module",
   "author": "Steeves and Associates",
@@ -15,7 +15,7 @@
   },
   "main": "dist/index.js",
   "bin": {
-    "homey-mcp": "dist/index.js"
+    "homey-wan-kenobi": "dist/index.js"
   },
   "files": [
     "dist"
