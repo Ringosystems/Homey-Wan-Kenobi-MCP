@@ -10,6 +10,52 @@ MCP server for controlling [Homey Pro](https://homey.app/) smart home systems th
 
 60 tools and 3 knowledge prompts for device control, flow authoring, automation, monitoring, troubleshooting, network diagnostics, and self-hosted deployment.
 
+## Why Homey-Wan-Kenobi
+
+Athom ships an official [Homey MCP Server](https://mcp.athom.com): a cloud-brokered remote connector you add to a paid Claude or ChatGPT plan and sign into with your Homey account. It covers device status and control, renaming and moving devices, creating, updating and starting Flows and Advanced Flows, and setting Moods.
+
+This server differs in two ways. It is **self-hosted**, so you run it yourself over stdio or streamable-HTTP with no third-party broker and no paid AI-plan requirement. And it adds **operational depth** for power users that is not part of the official server's described capabilities.
+
+The table reflects Athom's publicly described capabilities as of June 2026. Athom does not publish a formal tool list, so the right-hand gaps are inferred from their documentation, not stated by Athom.
+
+| Capability | Official Homey MCP (`mcp.athom.com`) | Homey-Wan-Kenobi |
+|------------|--------------------------------------|------------------|
+| Hosting | Cloud-brokered remote connector | Self-hosted, stdio or HTTP, no broker |
+| Access | Paid Claude/ChatGPT connector plan | Any MCP client, no plan requirement |
+| Devices, zones, control, rename, move | Yes | Yes |
+| Flow and Advanced Flow authoring | Yes | Yes |
+| Moods | Yes | Yes |
+| Flow-card schema discovery (build flows from scratch) | Not described | Yes |
+| Energy: live power and day/week/month/year reports | Not described | Yes |
+| Insights: historical sensor and meter data | Not described | Yes |
+| Z-Wave and Zigbee mesh diagnostics with remediations | Not described | Yes |
+| App memory and usage analysis (removal candidates) | Not described | Yes |
+| Infrastructure ops: backups, reboot, updates, memory, storage | Not described | Yes |
+| Raw Homey Web API passthrough | Not described | Yes |
+| Listed in the public MCP Registry | No | Yes |
+
+### The depth, in practice
+
+- **Network diagnostics that the official server does not describe.** `diagnose_zwave_network` and `diagnose_zigbee_network` read controller health, grade each node by last-seen age (battery-sleep aware), group transmit failures, correlate them with unavailable devices, and return severity-ranked remediations. `get_zwave_log` exposes the raw network log.
+- **Energy and Insights analysis.** Live power by zone and device, day/week/month/year energy reports, and timestamped historical sensor and meter data, so the model can answer "what is using power right now" or "how has the bedroom temperature trended this week".
+- **App memory and usage analysis.** `analyze_app_usage` cross-references every app against RAM, device counts and flow references to flag safe removal candidates and estimate savings. Read-only and advisory.
+- **Build automations from scratch.** A flow-card discovery engine (`list_flow_cards`, `get_flow_card`) returns each card's full argument schema, and full standard and Advanced Flow CRUD (including delete) lets an AI author and tear down the whole cards graph by UUID.
+- **Infrastructure operations from one interface.** Backups, reboot, update checks, memory and storage usage, drivers, LED ring, session and location info.
+- **A future-proof escape hatch.** `homey_api_call` reaches any Homey Web API endpoint directly, so new firmware features work without waiting for a tool update.
+
+It runs on a hardened, non-root `node:22-alpine` image whose every build and release is gated on a Trivy scan, and it is published to Docker Hub, GHCR and the public MCP Registry. See [the tool reference](#tools) below for the full list.
+
+### When the official server is the better fit
+
+This server is local-first and self-hosted, which is both its strength and its trade-off. The official Homey MCP is the easier choice when you want:
+
+- **Zero setup and managed hosting.** Add one URL and sign in with your Homey account. There is no container to run, expose, or maintain, and there is a one-click ChatGPT app.
+- **Secure remote access from anywhere.** Athom brokers the connection through its cloud, so it works away from home without exposing anything on your LAN. This server's HTTP mode is intended for a trusted local network; remote use is your own VPN or authenticated reverse proxy.
+- **Every Homey model.** The official endpoint reaches Homey Cloud, Pro, Pro mini and Self-Hosted Server, including cloud-only setups that have no local API. This server targets a Homey reachable over its local API or your Athom token, so it is happiest with a Homey Pro.
+- **First-party support.** It is maintained by Athom, kept in step with firmware, and officially tested with Claude and the ChatGPT app. This project is independent and best-effort.
+
+The two are complementary. Many people use the official connector for quick remote control and this server for the deep local diagnostics, energy analysis, and infrastructure work. Athom does not publish a formal tool list, so the official server may also include capabilities not reflected above.
+
 ## Quick Start
 
 ```bash

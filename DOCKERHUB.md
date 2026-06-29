@@ -29,6 +29,21 @@ Also published to the GitHub Container Registry at `ghcr.io/ringosystems/homey-w
 
 The full tool list lives in the [README](https://github.com/Ringosystems/Homey-Wan-Kenobi-MCP/blob/main/README.md).
 
+## How it compares to the official Homey MCP
+
+Athom ships an official [Homey MCP Server](https://mcp.athom.com): a cloud-brokered remote connector you add to a paid Claude or ChatGPT plan. It covers device status and control, rename and move, Flow and Advanced Flow authoring, and Moods. This server matches that and adds operational depth that is not part of the official server's described capabilities (as of June 2026; Athom publishes no formal tool list):
+
+- Z-Wave and Zigbee mesh diagnostics with severity-ranked remediations
+- Live and historical energy plus Insights analysis
+- App memory and usage analysis with safe removal candidates
+- Infrastructure ops: backups, reboot, update checks, memory and storage
+- Flow-card schema discovery to build automations from scratch
+- A raw Web API passthrough so new firmware features work without a tool update
+
+It is also self-hosted (stdio or HTTP, no broker, no paid AI-plan requirement) and listed in the public MCP Registry.
+
+The official server is the better fit when you want zero-setup managed hosting, secure remote access from anywhere via Athom's cloud, coverage of every Homey model (including cloud-only), or first-party support. The two are complementary: the official connector for quick remote control, this server for deep local diagnostics, energy, and infrastructure work.
+
 ## Run it (stdio, for an MCP client)
 
 The image defaults to the stdio transport, so an MCP client can launch it directly:

@@ -1,0 +1,26 @@
+name: Sync Docker Hub description
+
+# Pushes DOCKERHUB.md (and the short description) to the Docker Hub repo overview
+# on demand, without cutting a release. The image-publish workflow also syncs this
+# on every version tag. Requires DOCKERHUB_USERNAME and DOCKERHUB_TOKEN secrets.
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Sync Docker Hub description
+        uses: peter-evans/dockerhub-description@1b9a80c056b620d92cedb9d9b5a223409c68ddfa # v5.0.0
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          repository: ${{ vars.DOCKERHUB_IMAGE || 'ringosystems/homey-wan-kenobi' }}
+          short-description: "MCP server for Homey Pro: 60 tools for devices, flows, energy, and Z-Wave/Zigbee diagnostics."
+          readme-filepath: ./DOCKERHUB.md
