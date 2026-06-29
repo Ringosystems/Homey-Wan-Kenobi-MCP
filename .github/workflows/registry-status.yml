@@ -1,0 +1,57 @@
+name: Set MCP Registry status
+
+# Manual utility to set a server's lifecycle status in the MCP Registry
+# (active / deprecated / deleted). Uses GitHub OIDC, which grants the whole
+# io.github.<owner>/* namespace, so it can manage any server published under
+# this account (including superseded/renamed entries).
+
+on:
+  workflow_dispatch:
+    inputs:
+      server_name:
+        description: "Server name, e.g. io.github.Ringosystems/homey-mcp"
+        required: true
+      status:
+        description: "New status"
+        required: true
+        default: deprecated
+        type: choice
+        options: [active, deprecated, deleted]
+      version:
+        description: "Specific version (leave blank to apply to all versions)"
+        required: false
+      message:
+        description: "Optional message explaining the change"
+        required: false
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  set-status:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install mcp-publisher
+        run: |
+          curl -L "https://github.com/modelcontextprotocol/registry/releases/latest/download/mcp-publisher_$(uname -s | tr '[:upper:]' '[:lower:]')_$(uname -m | sed 's/x86_64/amd64/;s/aarch64/arm64/').tar.gz" | tar xz mcp-publisher
+
+      - name: Authenticate (OIDC)
+        run: ./mcp-publisher login github-oidc
+
+      - name: Set status
+        env:
+          SERVER: ${{ inputs.server_name }}
+          STATUS: ${{ inputs.status }}
+          VERSION: ${{ inputs.version }}
+          MESSAGE: ${{ inputs.message }}
+        run: |
+          set -e
+          args=(status --status "$STATUS" -y)
+          [ -n "$MESSAGE" ] && args+=(--message "$MESSAGE")
+          if [ -z "$VERSION" ]; then
+            args+=(--all-versions "$SERVER")
+          else
+            args+=("$SERVER" "$VERSION")
+          fi
+          ./mcp-publisher "${args[@]}"
