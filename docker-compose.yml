@@ -1,0 +1,32 @@
+services:
+  homey-mcp:
+    # Pulls the published image. `docker compose up -d --build` builds locally instead.
+    image: ringosystems/homey-wan-kenobi:latest
+    build: .
+    container_name: homey-mcp
+    ports:
+      - "8000:8000"
+    environment:
+      # Local API key auth (recommended for self-hosted containers).
+      # Create a key at https://my.homey.app/settings/system/api-keys
+      HOMEY_ADDRESS: "${HOMEY_ADDRESS:-http://192.168.1.x}"
+      HOMEY_TOKEN: "${HOMEY_TOKEN:-}"
+    restart: unless-stopped
+
+    # ---- Hardening ----
+    read_only: true                 # immutable root filesystem
+    tmpfs:
+      - /tmp                         # writable scratch space only
+    security_opt:
+      - no-new-privileges:true       # block setuid privilege escalation
+    cap_drop:
+      - ALL                          # the node HTTP server needs no Linux capabilities
+    mem_limit: 256m
+    pids_limit: 128
+
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://localhost:8000/healthz').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s

@@ -1,4 +1,5 @@
 import fs from "fs";
+import os from "os";
 import path from "path";
 
 // homey-api is CJS, use require
@@ -12,8 +13,10 @@ export async function getHomeyApi(): Promise<any> {
   if (cachedApi) return cachedApi;
 
   // Strategy 1: Use Homey CLI stored OAuth token (~/.athom-cli/settings.json)
+  // os.homedir() resolves the home directory cross-platform (HOME on Unix,
+  // USERPROFILE on Windows), which is where the Athom CLI stores its settings.
   const cliSettingsPath = path.join(
-    process.env.HOME ?? "",
+    os.homedir(),
     ".athom-cli",
     "settings.json"
   );

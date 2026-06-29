@@ -1,0 +1,10 @@
+# Trivy ignore file — accepted, reviewed vulnerabilities.
+# Reviewed: 2026-06-28. Re-evaluate when homey-api ships a socket.io-client v4+ release.
+#
+# CVE-2024-36751 — parseuri ReDoS.
+# Reached only through homey-api's legacy socket.io-client@2.x realtime transport.
+# This MCP server uses request/response HTTP calls, not the realtime socket, and the
+# only socket peer is the user's own trusted local Homey Pro. homey-api pins
+# socket.io-client@^2.5.0 and engine.io-client@^3.5.5, so the patched major cannot be
+# adopted without breaking Homey connectivity. Severity in this context is low.
+CVE-2024-36751

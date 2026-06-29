@@ -1,6 +1,6 @@
 {
   "name": "homey-mcp",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "MCP server for Homey Pro smart home control",
   "type": "module",
   "main": "dist/index.js",
@@ -30,8 +30,8 @@
     "node": ">=20"
   },
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.26.0",
-    "homey-api": "^3.17.0",
+    "@modelcontextprotocol/sdk": "^1.29.0",
+    "homey-api": "^3.19.1",
     "zod": "^3.24.0"
   },
   "devDependencies": {
@@ -41,5 +41,8 @@
     "tsx": "^4.19.0",
     "typescript": "^5.7.0",
     "typescript-eslint": "^8.0.0"
+  },
+  "overrides": {
+    "esbuild": "^0.28.1"
   }
 }

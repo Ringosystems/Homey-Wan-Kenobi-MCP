@@ -895,7 +895,7 @@ server.registerTool("analyze_app_usage", {
     api.system.getMemoryInfo(), api.apps.getApps(), api.devices.getDevices(), api.flow.getFlows(),
   ]);
   let advList: any[] = [];
-  try { advList = Object.values(await api.flow.getAdvancedFlows()) as any[]; } catch {}
+  try { advList = Object.values(await api.flow.getAdvancedFlows()) as any[]; } catch { /* advanced flows may be unavailable */ }
   const apps = Object.values(appsObj) as any[];
   const devices = Object.values(devicesObj) as any[];
   const mb = (b: number) => Math.round((b / 1048576) * 10) / 10;
@@ -903,10 +903,10 @@ server.registerTool("analyze_app_usage", {
   const devCount: Record<string, number> = {};
   for (const d of devices) { const m = String(d.driverId || "").match(/^homey:app:([^:]+)/); if (m) devCount[m[1]] = (devCount[m[1]] || 0) + 1; }
   let blob = "";
-  for (const f of Object.values(flowsObj) as any[]) { try { blob += JSON.stringify(await api.flow.getFlow({ id: f.id })); } catch {} }
-  for (const f of advList) { try { blob += JSON.stringify(await api.flow.getAdvancedFlow({ id: f.id })); } catch {} }
+  for (const f of Object.values(flowsObj) as any[]) { try { blob += JSON.stringify(await api.flow.getFlow({ id: f.id })); } catch { /* skip flows we cannot read */ } }
+  for (const f of advList) { try { blob += JSON.stringify(await api.flow.getAdvancedFlow({ id: f.id })); } catch { /* skip flows we cannot read */ } }
   const used = new Set<string>();
-  for (const m of blob.matchAll(/homey:app:([a-zA-Z0-9_.\-]+)/g)) used.add(m[1]);
+  for (const m of blob.matchAll(/homey:app:([a-zA-Z0-9_.-]+)/g)) used.add(m[1]);
   for (const m of blob.matchAll(/homey:device:([0-9a-f-]{36})/g)) { const d = (devicesObj as any)[m[1]]; const am = String(d?.driverId || "").match(/^homey:app:([^:]+)/); if (am) used.add(am[1]); }
   const rows = apps.map((a) => ({ id: a.id, name: a.name, enabled: a.enabled, ramMB: mb(ramOf(a.id)), devices: devCount[a.id] || 0, usedInFlows: used.has(a.id) })).sort((x, y) => y.ramMB - x.ramMB);
   const removalCandidates = rows.filter((r) => r.devices === 0 && !r.usedInFlows);
