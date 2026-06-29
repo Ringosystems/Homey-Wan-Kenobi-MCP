@@ -1,12 +1,13 @@
 name: Publish Docker image
 
-# Publishes a multi-arch image to Docker Hub on a version tag (e.g. v2.1.0),
-# gated by a Trivy HIGH/CRITICAL scan of the built image.
+# On a version tag (e.g. v2.1.0): build a multi-arch image, gate it on a Trivy
+# HIGH/CRITICAL scan, push to Docker Hub and GHCR, sync the Docker Hub overview,
+# and publish the entry to the MCP Registry.
 #
 # Required repository configuration (Settings -> Secrets and variables -> Actions):
 #   Secrets:   DOCKERHUB_USERNAME, DOCKERHUB_TOKEN  (a Docker Hub access token)
-#   Variable:  DOCKERHUB_IMAGE  (e.g. ringosystems/homey-wan-kenobi)
-#              If unset, falls back to the default below.
+#   Variable:  DOCKERHUB_IMAGE  (e.g. ringosystems/homey-wan-kenobi; falls back to the default below)
+# GHCR uses the built-in GITHUB_TOKEN. The MCP Registry uses GitHub OIDC (no secret).
 
 on:
   push:
@@ -15,6 +16,8 @@ on:
 
 permissions:
   contents: read
+  packages: write   # push to GHCR
+  id-token: write   # MCP Registry OIDC
 
 env:
   IMAGE: ${{ vars.DOCKERHUB_IMAGE || 'ringosystems/homey-wan-kenobi' }}
@@ -35,13 +38,15 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ${{ env.IMAGE }}
+          images: |
+            ${{ env.IMAGE }}
+            ghcr.io/${{ env.IMAGE }}
           tags: |
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
             type=raw,value=latest
 
-      # Build a single-arch image locally so Trivy can scan exactly what we ship.
+      # Build a single-arch image locally so Trivy scans exactly what we ship.
       - name: Build image for scanning
         uses: docker/build-push-action@v6
         with:
@@ -67,7 +72,14 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Build and push (multi-arch)
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push (multi-arch, Docker Hub + GHCR)
         uses: docker/build-push-action@v6
         with:
           context: .
@@ -77,3 +89,34 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+      - name: Sync Docker Hub description
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: peter-evans/dockerhub-description@1b9a80c056b620d92cedb9d9b5a223409c68ddfa # v5.0.0
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          repository: ${{ env.IMAGE }}
+          short-description: "MCP server for Homey Pro: 60 tools for devices, flows, energy, and Z-Wave/Zigbee diagnostics."
+          readme-filepath: ./DOCKERHUB.md
+
+      # ---- MCP Registry (io.github.Ringosystems/homey-mcp) ----
+      - name: Pin server.json to this release
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: |
+          VERSION=${GITHUB_REF#refs/tags/v}
+          jq --arg v "$VERSION" --arg id "docker.io/$IMAGE:$VERSION" \
+            '.version = $v | .packages[0].identifier = $id' server.json > server.tmp
+          mv server.tmp server.json
+          cat server.json
+
+      - name: Install mcp-publisher
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: |
+          curl -L "https://github.com/modelcontextprotocol/registry/releases/latest/download/mcp-publisher_$(uname -s | tr '[:upper:]' '[:lower:]')_$(uname -m | sed 's/x86_64/amd64/;s/aarch64/arm64/').tar.gz" | tar xz mcp-publisher
+
+      - name: Publish to MCP Registry
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: |
+          ./mcp-publisher login github-oidc
+          ./mcp-publisher publish

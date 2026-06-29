@@ -1,6 +1,8 @@
 # Homey MCP Server
 
-[![CI](https://github.com/homey-mcp/homey-mcp/actions/workflows/ci.yml/badge.svg)](https://github.com/homey-mcp/homey-mcp/actions/workflows/ci.yml)
+[![CI](https://github.com/Ringosystems/homey-mcp/actions/workflows/ci.yml/badge.svg)](https://github.com/Ringosystems/homey-mcp/actions/workflows/ci.yml)
+[![Docker Pulls](https://img.shields.io/docker/pulls/ringosystems/homey-wan-kenobi)](https://hub.docker.com/r/ringosystems/homey-wan-kenobi)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
 MCP server for controlling [Homey Pro](https://homey.app/) smart home systems through the [Model Context Protocol](https://modelcontextprotocol.io/).
 
@@ -9,7 +11,7 @@ MCP server for controlling [Homey Pro](https://homey.app/) smart home systems th
 ## Quick Start
 
 ```bash
-git clone https://github.com/homey-mcp/homey-mcp.git
+git clone https://github.com/Ringosystems/homey-mcp.git
 cd homey-mcp
 npm install
 npm run build
@@ -52,12 +54,24 @@ The local API key method is the recommended choice when running self-hosted in a
 
 ## Self-Hosted (Docker / HTTP)
 
-Run the server as a long-lived HTTP service instead of a per-client stdio process. The container wraps the stdio server with [supergateway](https://github.com/supercorp-ai/supergateway) and exposes it as streamable-HTTP at `/mcp`, with a health endpoint at `/healthz`. The image is published at [`ringosystems/homey-wan-kenobi`](https://hub.docker.com/r/ringosystems/homey-wan-kenobi), built on `node:22-alpine`, runs as a non-root user, and ships no baked-in secrets. See [SECURITY.md](SECURITY.md) for the audit details.
+The image is published at [`ringosystems/homey-wan-kenobi`](https://hub.docker.com/r/ringosystems/homey-wan-kenobi) (mirrored to `ghcr.io/ringosystems/homey-wan-kenobi`), and the server is listed in the [MCP Registry](https://registry.modelcontextprotocol.io) as `io.github.Ringosystems/homey-mcp`. It is built on `node:22-alpine`, runs as a non-root user, and ships no baked-in secrets. See [SECURITY.md](SECURITY.md) for the audit details.
 
-### Pull from Docker Hub
+It defaults to the **stdio** transport so an MCP client can launch it directly, and exposes a long-lived **streamable-HTTP** service (via [supergateway](https://github.com/supercorp-ai/supergateway) at `/mcp`, health at `/healthz`) when you set `MCP_TRANSPORT=streamable-http`.
+
+### Run as an MCP client (stdio)
+
+```bash
+docker run -i --rm \
+  -e HOMEY_ADDRESS=http://192.168.1.x \
+  -e HOMEY_TOKEN=your-local-api-key \
+  ringosystems/homey-wan-kenobi:latest
+```
+
+### Run as an HTTP service
 
 ```bash
 docker run -d -p 8000:8000 \
+  -e MCP_TRANSPORT=streamable-http \
   -e HOMEY_ADDRESS=http://192.168.1.x \
   -e HOMEY_TOKEN=your-local-api-key \
   --restart unless-stopped \
@@ -89,6 +103,7 @@ services:
     ports:
       - "8000:8000"
     environment:
+      MCP_TRANSPORT: streamable-http
       HOMEY_ADDRESS: "${HOMEY_ADDRESS:-http://192.168.1.x}"
       HOMEY_TOKEN: "${HOMEY_TOKEN:-}"
     restart: unless-stopped
@@ -114,6 +129,7 @@ services:
 ```bash
 docker build -t ringosystems/homey-wan-kenobi .
 docker run -d -p 8000:8000 \
+  -e MCP_TRANSPORT=streamable-http \
   -e HOMEY_ADDRESS=http://192.168.1.x \
   -e HOMEY_TOKEN=your-local-api-key \
   --restart unless-stopped \

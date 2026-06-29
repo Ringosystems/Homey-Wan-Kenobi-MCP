@@ -30,27 +30,28 @@ RUN npm ci --omit=dev \
  && rm -rf /usr/local/lib/node_modules/npm /usr/local/bin/npm /usr/local/bin/npx
 
 COPY --from=builder /app/dist ./dist
+COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
 LABEL org.opencontainers.image.title="homey-mcp" \
       org.opencontainers.image.description="MCP server for Homey Pro smart home control (60 tools, 3 prompts)" \
       org.opencontainers.image.licenses="MIT" \
-      org.opencontainers.image.source="https://github.com/homey-mcp/homey-mcp" \
-      org.opencontainers.image.url="https://github.com/homey-mcp/homey-mcp" \
-      org.opencontainers.image.vendor="Steeves and Associates"
+      org.opencontainers.image.source="https://github.com/Ringosystems/homey-mcp" \
+      org.opencontainers.image.url="https://github.com/Ringosystems/homey-mcp" \
+      org.opencontainers.image.vendor="Steeves and Associates" \
+      io.modelcontextprotocol.server.name="io.github.Ringosystems/homey-mcp"
 
-# supergateway exposes the stdio MCP server as streamable-HTTP on this port.
+# Default transport is stdio (MCP clients via `docker run -i`, and the MCP Registry).
+# Set MCP_TRANSPORT=streamable-http to expose a long-lived HTTP service on this port
+# (path /mcp, health at /healthz).
 EXPOSE 8000
 
 # Credentials are supplied at runtime (compose env / docker run -e), never baked
 # into the image. Run as the unprivileged 'node' user shipped by the base image.
 USER node
 
+# Health check applies to HTTP mode; stdio containers report healthy immediately.
 HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=3 \
-  CMD node -e "fetch('http://localhost:8000/healthz').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"
+  CMD node -e "const t=process.env.MCP_TRANSPORT||'stdio'; if(t!=='streamable-http'&&t!=='http')process.exit(0); fetch('http://localhost:'+(process.env.MCP_PORT||8000)+'/healthz').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"
 
-CMD ["supergateway", \
-     "--stdio", "node dist/index.js", \
-     "--outputTransport", "streamableHttp", \
-     "--port", "8000", \
-     "--streamableHttpPath", "/mcp", \
-     "--healthEndpoint", "/healthz"]
+ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]

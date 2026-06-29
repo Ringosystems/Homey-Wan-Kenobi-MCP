@@ -7,6 +7,8 @@ services:
     ports:
       - "8000:8000"
     environment:
+      # Expose the server as a long-lived HTTP service (the image defaults to stdio).
+      MCP_TRANSPORT: streamable-http
       # Local API key auth (recommended for self-hosted containers).
       # Create a key at https://my.homey.app/settings/system/api-keys
       HOMEY_ADDRESS: "${HOMEY_ADDRESS:-http://192.168.1.x}"
