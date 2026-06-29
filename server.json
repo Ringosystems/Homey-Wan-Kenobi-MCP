@@ -1,18 +1,18 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
-  "name": "io.github.Ringosystems/homey-mcp",
+  "name": "io.github.Ringosystems/homey-wan-kenobi-mcp",
   "description": "MCP server for Homey Pro: 60 tools for devices, flows, energy, and Z-Wave/Zigbee diagnostics.",
   "title": "Homey MCP",
   "repository": {
-    "url": "https://github.com/Ringosystems/homey-mcp",
+    "url": "https://github.com/Ringosystems/Homey-Wan-Kenobi-MCP",
     "source": "github"
   },
-  "version": "2.1.0",
-  "websiteUrl": "https://github.com/Ringosystems/homey-mcp",
+  "version": "2.1.1",
+  "websiteUrl": "https://github.com/Ringosystems/Homey-Wan-Kenobi-MCP",
   "packages": [
     {
       "registryType": "oci",
-      "identifier": "docker.io/ringosystems/homey-wan-kenobi:2.1.0",
+      "identifier": "docker.io/ringosystems/homey-wan-kenobi:2.1.1",
       "transport": {
         "type": "stdio"
       },

@@ -4,9 +4,9 @@ A **Model Context Protocol (MCP)** server for **Homey Pro** smart home systems. 
 
 > Independent project. Not affiliated with, endorsed by, or supported by Athom or Homey. "Homey" is a trademark of its respective owner.
 
-- **Source and full docs:** https://github.com/Ringosystems/homey-mcp
-- **Security model and audit:** https://github.com/Ringosystems/homey-mcp/blob/main/SECURITY.md
-- **MCP Registry:** `io.github.Ringosystems/homey-mcp`
+- **Source and full docs:** https://github.com/Ringosystems/Homey-Wan-Kenobi-MCP
+- **Security model and audit:** https://github.com/Ringosystems/Homey-Wan-Kenobi-MCP/blob/main/SECURITY.md
+- **MCP Registry:** `io.github.Ringosystems/homey-wan-kenobi-mcp`
 - **License:** MIT
 
 ## Tags
@@ -27,7 +27,7 @@ Also published to the GitHub Container Registry at `ghcr.io/ringosystems/homey-w
 | Diagnostics | Z-Wave and Zigbee network health with remediations, app RAM/usage analysis |
 | System | weather, presence, alarms, moods, notifications, backups, updates, reboot |
 
-The full tool list lives in the [README](https://github.com/Ringosystems/homey-mcp/blob/main/README.md).
+The full tool list lives in the [README](https://github.com/Ringosystems/Homey-Wan-Kenobi-MCP/blob/main/README.md).
 
 ## Run it (stdio, for an MCP client)
 
@@ -75,8 +75,8 @@ Optional:
 
 - Runs as a non-root user on `node:22-alpine`; no credentials are baked into the image.
 - Dependencies, base image, and the built image are scanned with Trivy on every release and gated on HIGH/CRITICAL findings.
-- The HTTP transport is unauthenticated. Keep it on a trusted LAN or front it with a reverse proxy that adds TLS and auth. See [SECURITY.md](https://github.com/Ringosystems/homey-mcp/blob/main/SECURITY.md).
+- The HTTP transport is unauthenticated. Keep it on a trusted LAN or front it with a reverse proxy that adds TLS and auth. See [SECURITY.md](https://github.com/Ringosystems/Homey-Wan-Kenobi-MCP/blob/main/SECURITY.md).
 
 ## More
 
-Full setup, the complete tool list, authentication options, and client configuration are documented in the [README](https://github.com/Ringosystems/homey-mcp/blob/main/README.md).
+Full setup, the complete tool list, authentication options, and client configuration are documented in the [README](https://github.com/Ringosystems/Homey-Wan-Kenobi-MCP/blob/main/README.md).

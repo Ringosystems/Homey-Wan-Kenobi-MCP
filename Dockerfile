@@ -36,10 +36,10 @@ RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 LABEL org.opencontainers.image.title="homey-mcp" \
       org.opencontainers.image.description="MCP server for Homey Pro smart home control (60 tools, 3 prompts)" \
       org.opencontainers.image.licenses="MIT" \
-      org.opencontainers.image.source="https://github.com/Ringosystems/homey-mcp" \
-      org.opencontainers.image.url="https://github.com/Ringosystems/homey-mcp" \
+      org.opencontainers.image.source="https://github.com/Ringosystems/Homey-Wan-Kenobi-MCP" \
+      org.opencontainers.image.url="https://github.com/Ringosystems/Homey-Wan-Kenobi-MCP" \
       org.opencontainers.image.vendor="Steeves and Associates" \
-      io.modelcontextprotocol.server.name="io.github.Ringosystems/homey-mcp"
+      io.modelcontextprotocol.server.name="io.github.Ringosystems/homey-wan-kenobi-mcp"
 
 # Default transport is stdio (MCP clients via `docker run -i`, and the MCP Registry).
 # Set MCP_TRANSPORT=streamable-http to expose a long-lived HTTP service on this port

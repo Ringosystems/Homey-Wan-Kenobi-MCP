@@ -1,17 +1,17 @@
 {
   "name": "homey-mcp",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "description": "MCP server for Homey Pro smart home control",
   "type": "module",
   "author": "Steeves and Associates",
   "license": "MIT",
-  "homepage": "https://github.com/Ringosystems/homey-mcp#readme",
+  "homepage": "https://github.com/Ringosystems/Homey-Wan-Kenobi-MCP#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Ringosystems/homey-mcp.git"
+    "url": "git+https://github.com/Ringosystems/Homey-Wan-Kenobi-MCP.git"
   },
   "bugs": {
-    "url": "https://github.com/Ringosystems/homey-mcp/issues"
+    "url": "https://github.com/Ringosystems/Homey-Wan-Kenobi-MCP/issues"
   },
   "main": "dist/index.js",
   "bin": {

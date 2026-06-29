@@ -1,6 +1,6 @@
 # Homey MCP Server
 
-[![CI](https://github.com/Ringosystems/homey-mcp/actions/workflows/ci.yml/badge.svg)](https://github.com/Ringosystems/homey-mcp/actions/workflows/ci.yml)
+[![CI](https://github.com/Ringosystems/Homey-Wan-Kenobi-MCP/actions/workflows/ci.yml/badge.svg)](https://github.com/Ringosystems/Homey-Wan-Kenobi-MCP/actions/workflows/ci.yml)
 [![Docker Pulls](https://img.shields.io/docker/pulls/ringosystems/homey-wan-kenobi)](https://hub.docker.com/r/ringosystems/homey-wan-kenobi)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
@@ -11,8 +11,8 @@ MCP server for controlling [Homey Pro](https://homey.app/) smart home systems th
 ## Quick Start
 
 ```bash
-git clone https://github.com/Ringosystems/homey-mcp.git
-cd homey-mcp
+git clone https://github.com/Ringosystems/Homey-Wan-Kenobi-MCP.git
+cd Homey-Wan-Kenobi-MCP
 npm install
 npm run build
 ```
@@ -54,7 +54,7 @@ The local API key method is the recommended choice when running self-hosted in a
 
 ## Self-Hosted (Docker / HTTP)
 
-The image is published at [`ringosystems/homey-wan-kenobi`](https://hub.docker.com/r/ringosystems/homey-wan-kenobi) (mirrored to `ghcr.io/ringosystems/homey-wan-kenobi`), and the server is listed in the [MCP Registry](https://registry.modelcontextprotocol.io) as `io.github.Ringosystems/homey-mcp`. It is built on `node:22-alpine`, runs as a non-root user, and ships no baked-in secrets. See [SECURITY.md](SECURITY.md) for the audit details.
+The image is published at [`ringosystems/homey-wan-kenobi`](https://hub.docker.com/r/ringosystems/homey-wan-kenobi) (mirrored to `ghcr.io/ringosystems/homey-wan-kenobi`), and the server is listed in the [MCP Registry](https://registry.modelcontextprotocol.io) as `io.github.Ringosystems/homey-wan-kenobi-mcp`. It is built on `node:22-alpine`, runs as a non-root user, and ships no baked-in secrets. See [SECURITY.md](SECURITY.md) for the audit details.
 
 It defaults to the **stdio** transport so an MCP client can launch it directly, and exposes a long-lived **streamable-HTTP** service (via [supergateway](https://github.com/supercorp-ai/supergateway) at `/mcp`, health at `/healthz`) when you set `MCP_TRANSPORT=streamable-http`.
 
