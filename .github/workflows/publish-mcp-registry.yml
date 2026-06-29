@@ -1,0 +1,48 @@
+name: Publish to MCP Registry
+
+# Publishes the server.json entry to registry.modelcontextprotocol.io via GitHub
+# OIDC (no secret needed). Runs on a version tag, and can be dispatched manually
+# to (re)publish the current package.json version without rebuilding the image.
+# The image it references must already be pushed and public on Docker Hub.
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write # OIDC for the MCP Registry
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Determine version
+        id: ver
+        run: |
+          if [[ "${GITHUB_REF}" == refs/tags/v* ]]; then
+            V="${GITHUB_REF#refs/tags/v}"
+          else
+            V="$(node -p "require('./package.json').version")"
+          fi
+          echo "version=$V" >> "$GITHUB_OUTPUT"
+
+      - name: Pin server.json to this version
+        run: |
+          V="${{ steps.ver.outputs.version }}"
+          jq --arg v "$V" --arg id "docker.io/ringosystems/homey-wan-kenobi:$V" \
+            '.version = $v | .packages[0].identifier = $id' server.json > server.tmp
+          mv server.tmp server.json
+          cat server.json
+
+      - name: Install mcp-publisher
+        run: |
+          curl -L "https://github.com/modelcontextprotocol/registry/releases/latest/download/mcp-publisher_$(uname -s | tr '[:upper:]' '[:lower:]')_$(uname -m | sed 's/x86_64/amd64/;s/aarch64/arm64/').tar.gz" | tar xz mcp-publisher
+
+      - name: Publish to MCP Registry
+        run: |
+          ./mcp-publisher login github-oidc
+          ./mcp-publisher publish
