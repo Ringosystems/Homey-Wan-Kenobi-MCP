@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<!-- Unraid Community Applications repository profile. Describes the maintainer and
+     repo for the CA store; the per-app template is deploy/unraid/homey-wan-kenobi.xml.
+     Submit the repo at https://ca.unraid.net/submit (the portal validates this). -->
+<Maintainer>
+  <Profile>Independent, self-hosted MCP servers maintained by Ringosystems (Steeves and Associates). Homey-Wan-Kenobi MCP gives an MCP client (Claude Code, Claude Desktop, Cline, Kiro) natural-language control of Homey Pro: devices, zones, flows and Advanced Flows, live and historical energy, Insights, and Z-Wave and Zigbee mesh diagnostics, over 60 tools. Not affiliated with, endorsed by, or supported by Athom or Homey.</Profile>
+  <Icon>https://github.com/Ringosystems.png</Icon>
+  <WebPage>https://github.com/Ringosystems/Homey-Wan-Kenobi-MCP</WebPage>
+  <Forum>https://github.com/Ringosystems/Homey-Wan-Kenobi-MCP/issues</Forum>
+</Maintainer>

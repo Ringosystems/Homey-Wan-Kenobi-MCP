@@ -7,12 +7,12 @@
     "url": "https://github.com/Ringosystems/Homey-Wan-Kenobi-MCP",
     "source": "github"
   },
-  "version": "2.1.2",
+  "version": "2.2.0",
   "websiteUrl": "https://github.com/Ringosystems/Homey-Wan-Kenobi-MCP",
   "packages": [
     {
       "registryType": "oci",
-      "identifier": "docker.io/ringosystems/homey-wan-kenobi:2.1.2",
+      "identifier": "docker.io/ringosystems/homey-wan-kenobi:2.2.0",
       "transport": {
         "type": "stdio"
       },
