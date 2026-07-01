@@ -1,8 +1,9 @@
 name: Publish Docker image
 
 # On a version tag (e.g. v2.1.0): build a multi-arch image, gate it on a Trivy
-# HIGH/CRITICAL scan, push to Docker Hub and GHCR, sync the Docker Hub overview,
-# and publish the entry to the MCP Registry.
+# HIGH/CRITICAL scan, push to Docker Hub and GHCR, and sync the Docker Hub
+# overview. On success, a separate workflow (publish-mcp-registry.yml) publishes
+# the entry to the MCP Registry.
 #
 # Required repository configuration (Settings -> Secrets and variables -> Actions):
 #   Secrets:   DOCKERHUB_USERNAME, DOCKERHUB_TOKEN  (a Docker Hub access token)

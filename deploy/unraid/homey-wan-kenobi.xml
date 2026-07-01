@@ -1,0 +1,65 @@
+<?xml version="1.0"?>
+<!--
+  Unraid Community Applications template for Homey-Wan-Kenobi MCP.
+
+  Install options:
+    * Add by URL: Unraid > Docker > Add Container > Template, paste
+      https://raw.githubusercontent.com/Ringosystems/Homey-Wan-Kenobi-MCP/main/deploy/unraid/homey-wan-kenobi.xml
+    * Or install from Community Applications once this template is submitted at
+      https://ca.unraid.net/submit
+
+  Runs the persistent HTTP (streamable-http) service. The MCP endpoint at /mcp has
+  NO built-in authentication; keep it on a trusted LAN or behind an authenticating
+  reverse proxy. HOMEY_TOKEN authenticates this server to Homey, not the endpoint.
+-->
+<Container version="2">
+  <Name>Homey-Wan-Kenobi-MCP</Name>
+  <Repository>ghcr.io/ringosystems/homey-wan-kenobi:latest</Repository>
+  <Registry>https://github.com/Ringosystems/Homey-Wan-Kenobi-MCP/pkgs/container/homey-wan-kenobi</Registry>
+  <Network>bridge</Network>
+  <MyIP/>
+  <Shell>sh</Shell>
+  <Privileged>false</Privileged>
+  <Support>https://github.com/Ringosystems/Homey-Wan-Kenobi-MCP/issues</Support>
+  <Project>https://github.com/Ringosystems/Homey-Wan-Kenobi-MCP</Project>
+  <Overview>Independent, self-hosted Model Context Protocol (MCP) server for Homey Pro smart home systems. Gives an MCP client (Claude Code, Claude Desktop, Cline, Kiro) natural-language control of devices, zones, flows and Advanced Flows, live and historical energy, Insights, Z-Wave and Zigbee mesh diagnostics, and system operations, over 60 tools. Not affiliated with, endorsed by, or supported by Athom or Homey. Set MCP_TRANSPORT=streamable-http (default here) to expose the service at http://[IP]:[PORT:8000]/mcp with health at /healthz. The /mcp endpoint has NO built-in auth; keep it on a trusted LAN or behind an authenticating reverse proxy. Create a Homey local API key at https://my.homey.app/settings/system/api-keys and set HOMEY_ADDRESS and HOMEY_TOKEN.</Overview>
+  <Category>HomeAutomation: Network:Management Tools:</Category>
+  <WebUI/>
+  <TemplateURL>https://raw.githubusercontent.com/Ringosystems/Homey-Wan-Kenobi-MCP/main/deploy/unraid/homey-wan-kenobi.xml</TemplateURL>
+  <Icon>https://github.com/Ringosystems.png</Icon>
+  <!-- Container hardening (mirrors docker-compose.yml): immutable rootfs with a
+       tmpfs scratch, no new privileges, all Linux capabilities dropped, and
+       memory / PID limits. -->
+  <ExtraParams>--read-only --tmpfs /tmp --security-opt=no-new-privileges:true --cap-drop=ALL --memory=256m --pids-limit=128</ExtraParams>
+  <PostArgs/>
+  <CPUset/>
+  <DonateText/>
+  <DonateLink/>
+  <Description>Self-hosted MCP server for Homey Pro: 60 tools for devices, flows, energy, and Z-Wave/Zigbee diagnostics. Streamable-HTTP at /mcp. Independent project, not affiliated with Athom or Homey.</Description>
+  <Networking>
+    <Mode>bridge</Mode>
+    <Publish>
+      <Port>
+        <HostPort>8000</HostPort>
+        <ContainerPort>8000</ContainerPort>
+        <Protocol>tcp</Protocol>
+      </Port>
+    </Publish>
+  </Networking>
+  <Data/>
+  <!-- Env vars are defined canonically by the <Config Type="Variable"> entries
+       below; Unraid materialises each into a `-e NAME=value` on the run line. Do
+       not also hand-author a populated <Environment> block (it double-renders). -->
+  <Environment/>
+
+  <!-- Port -->
+  <Config Name="MCP HTTP Port" Target="8000" Default="8000" Mode="tcp" Description="Host port for the MCP streamable-http endpoint (served at /mcp, health at /healthz)." Type="Port" Display="always" Required="true" Mask="false">8000</Config>
+
+  <!-- Required Homey connection -->
+  <Config Name="HOMEY_ADDRESS" Target="HOMEY_ADDRESS" Default="http://192.168.1.10" Mode="" Description="Base URL of your Homey Pro local API, e.g. http://192.168.1.10" Type="Variable" Display="always" Required="true" Mask="false">http://192.168.1.10</Config>
+  <Config Name="HOMEY_TOKEN" Target="HOMEY_TOKEN" Default="" Mode="" Description="Homey local API key, created at https://my.homey.app/settings/system/api-keys. Authenticates this server to Homey." Type="Variable" Display="always" Required="true" Mask="true"></Config>
+
+  <!-- Transport (leave as-is for the HTTP service) -->
+  <Config Name="MCP_TRANSPORT" Target="MCP_TRANSPORT" Default="streamable-http" Mode="" Description="Leave as streamable-http for the persistent HTTP service. Set to stdio only if launching the container interactively as an MCP client." Type="Variable" Display="advanced" Required="true" Mask="false">streamable-http</Config>
+  <Config Name="MCP_PORT" Target="MCP_PORT" Default="8000" Mode="" Description="Container-internal port the HTTP service listens on. Match the container side of the port mapping." Type="Variable" Display="advanced" Required="true" Mask="false">8000</Config>
+</Container>

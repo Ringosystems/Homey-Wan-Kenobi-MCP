@@ -106,6 +106,20 @@ The image is published at [`ringosystems/homey-wan-kenobi`](https://hub.docker.c
 
 It defaults to the **stdio** transport so an MCP client can launch it directly, and exposes a long-lived **streamable-HTTP** service (via [supergateway](https://github.com/supercorp-ai/supergateway) at `/mcp`, health at `/healthz`) when you set `MCP_TRANSPORT=streamable-http`.
 
+### Fastest: one command (prebuilt image)
+
+No clone or build. Pull two things and start it:
+
+```bash
+curl -fsSLO https://raw.githubusercontent.com/Ringosystems/Homey-Wan-Kenobi-MCP/main/docker-compose.deploy.yml
+printf 'HOMEY_ADDRESS=http://192.168.1.x\nHOMEY_TOKEN=your-local-api-key\n' > .env
+docker compose -f docker-compose.deploy.yml up -d
+```
+
+The service is then at `http://<host>:8000/mcp` (health at `/healthz`). On **Unraid**, add the template by URL instead: Docker, Add Container, paste `https://raw.githubusercontent.com/Ringosystems/Homey-Wan-Kenobi-MCP/main/deploy/unraid/homey-wan-kenobi.xml` into the Template field. The image is multi-arch, so it runs on x86 and ARM (Apple Silicon, Raspberry Pi) hosts.
+
+> The `/mcp` endpoint has no built-in authentication. Keep it on a trusted LAN or behind a reverse proxy that adds TLS and auth.
+
 ### Run as an MCP client (stdio)
 
 ```bash
@@ -373,3 +387,7 @@ The dependency tree, base image, and container configuration are audited with [T
 ## License
 
 [MIT](LICENSE)
+
+Release process, one-time setup, and Unraid Community Applications submission are
+documented in [PUBLISHING.md](PUBLISHING.md); notable changes in
+[CHANGELOG.md](CHANGELOG.md).

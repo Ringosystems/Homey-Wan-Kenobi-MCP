@@ -1,0 +1,48 @@
+# Homey-Wan-Kenobi MCP — ZERO-BUILD deploy. Runs the prebuilt, multi-arch image
+# from GitHub Container Registry (amd64 + arm64), so you do NOT need to clone the
+# repo. Independent project, not affiliated with Athom or Homey.
+#
+# Fastest start (this file + a .env are all you need):
+#   1. curl -fsSLO https://raw.githubusercontent.com/Ringosystems/Homey-Wan-Kenobi-MCP/main/docker-compose.deploy.yml
+#   2. printf 'HOMEY_ADDRESS=http://192.168.1.x\nHOMEY_TOKEN=your-local-api-key\n' > .env
+#      (create the local API key at https://my.homey.app/settings/system/api-keys)
+#   3. docker compose -f docker-compose.deploy.yml up -d
+#
+# The MCP endpoint is then at http://<host>:8000/mcp (health at /healthz). Point an
+# MCP client at it. NOTE: the /mcp endpoint has NO built-in authentication. Keep it
+# on a trusted LAN, or front it with a reverse proxy that adds TLS and auth.
+# HOMEY_TOKEN authenticates this server TO Homey; it does not protect the endpoint.
+#
+# Update:  docker compose -f docker-compose.deploy.yml pull && \
+#          docker compose -f docker-compose.deploy.yml up -d
+services:
+  homey-wan-kenobi:
+    # Pin to a version (e.g. :2.2.0) for reproducible deploys; :latest tracks the
+    # newest release.
+    image: ghcr.io/ringosystems/homey-wan-kenobi:latest
+    container_name: homey-wan-kenobi
+    restart: unless-stopped
+    pull_policy: always        # `up -d` re-checks the registry for a newer :latest
+    ports:
+      - "8000:8000"            # host:container
+    env_file:
+      - .env                   # HOMEY_ADDRESS (required), HOMEY_TOKEN (required)
+    environment:
+      MCP_TRANSPORT: streamable-http
+      MCP_PORT: "8000"
+    # ---- Hardening (matches docker-compose.yml) ----
+    read_only: true                 # immutable root filesystem
+    tmpfs:
+      - /tmp                         # writable scratch space only
+    security_opt:
+      - no-new-privileges:true       # block setuid privilege escalation
+    cap_drop:
+      - ALL                          # the node HTTP server needs no Linux capabilities
+    mem_limit: 256m
+    pids_limit: 128
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://localhost:8000/healthz').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
